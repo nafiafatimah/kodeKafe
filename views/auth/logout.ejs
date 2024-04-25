@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+</head>
+<body>
+    <h1>Logging Out...</h1>
+    <p>Please wait while you are being logged out...</p>
+    
+    <% setTimeout(function() { %>
+        <% var redirectUrl = "/login"; %>
+        window.location.href = "<%= redirectUrl %>";
+    <% }, 3000); %>
+</body>
+</html>

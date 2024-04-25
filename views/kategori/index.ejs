@@ -1,0 +1,44 @@
+<%- include("../partials/head") %>
+<%- include("../partials/sidebar") %>
+<%- include("../partials/topbar") %>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Daftar Kategori</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Daftar Kategori</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <a href="/kategori/create">
+                            <i class="fas fa-table me-1"></i>
+                            Tambah Kategori
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple" class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Nama Kategori</th>
+                                    <th scope="col">Aksi</th> <!-- Tambah kolom untuk aksi -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(var i = 0; i < data.length; i++){ %>
+                                <tr>
+                                    <th scope="row"><%= data[i].id_kategori %></th> <!-- Ubah sesuai dengan field ID -->
+                                    <td><%= data[i].nama_kategori %></td>
+                                    <td>
+                                        <a href="/kategori/edit/<%= data[i].id_kategori %>" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="/kategori/delete/<%= data[i].id_kategori %>" class="btn btn-sm btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+            </div>
+        </main>
+<%- include("../partials/footer") %>

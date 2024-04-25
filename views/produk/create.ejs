@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Produk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        form {
+            width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        select,
+        input[type="file"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <form action="/produk/store" method="POST" enctype="multipart/form-data">
+        <h3>Tambah Produk</h3>
+        <label for="nama_produk">Nama Produk:</label>
+        <input type="text" id="nama_produk" name="nama_produk" required>
+
+        <label for="harga_produk">Harga:</label>
+        <input type="text" id="harga_produk" name="harga_produk" required>
+
+        <label for="id_kategori">Kategori:</label>
+        <select id="id_kategori" name="id_kategori" required>
+            <% data.forEach(function(kategori) { %>
+                <option value="<%= kategori.id_kategori %>"><%= kategori.nama_kategori %></option>
+            <% }); %>
+        </select>
+
+        <label for="foto_produk">Foto Produk:</label>
+        <input type="file" id="foto_produk" name="foto_produk" required>
+
+        <button type="submit">Simpan</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<%- include("../partials/head") %>
+<%- include("../partials/sidebar") %>
+<%- include("../partials/topbar") %>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Daftar Produk</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active">Produk</li>
+            </ol>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <a href="/produk/create" >
+                        <div class="fas fa-table me-1">
+                        </div>
+                    </a>
+                    <i  class="">Tambah Produk</i> 
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Gambar</th>
+                                <th scope="col">Nama Produk</th>
+                                <th scope="col">Harga</th>
+                                <th scope="col">Nama Kategori</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% data.forEach(function(produk) { %>
+                                <tr>
+                                    <td><%= produk.id_produk %></td>
+                                    <td> <img src="/images/upload/<%= produk.foto_produk %>" alt="<%= produk.nama_produk %>" style="max-width: 100px;"></td>
+                                    <td><%= produk.nama_produk %></td>
+                                    <td><%= produk.harga_produk %></td>
+                                    <td><%= produk.nama_kategori %></td>
+                                    <td>
+                                        <a href="/produk/edit/<%= produk.id_produk %>" class="btn btn-warning">Edit</a>
+                                        <a href="/produk/delete/<%= produk.id_produk %>" class="btn btn-danger">Hapus</a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div> 
+        </div>
+    </main>
+
+    <%- include("../partials/footer") %>

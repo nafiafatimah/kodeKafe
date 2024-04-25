@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Produk</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Kustomisasi grid untuk menampilkan produk */
+        body {
+            background-color: #bab2b8fb; /* Warna latar belakang */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            width: 300px; /* Lebar card */
+            height: 380px; /* Tinggi card */
+            overflow: hidden; /* Pastikan gambar tidak keluar dari batas card */
+            position: relative; /* Tambahkan posisi relatif untuk menempatkan tombol tambah */
+            background-color: #ffffff; /* Warna latar belakang card */
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 60%; /* Atur tinggi gambar */
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            object-fit: cover; /* Gambar akan menyesuaikan dan diatur agar mengisi ukuran card */
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 16px;
+        }
+
+        .add-to-cart {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-item button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Daftar Produk</h1>
+    <div class="row">
+        <% Object.keys(categorizedProducts).forEach(kategori => { %>
+            <% categorizedProducts[kategori].forEach(produk => { %>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="/images/upload/<%= produk.foto_produk %>" alt="<%= produk.nama_produk %>" class="card-img-top">
+                        <div class="card-body">
+                                <div class="row">
+                                  <div class="col-sm-8">
+                                    <h5 class="card-title"><%= produk.nama_produk %></h5>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button class="add-to-cart" onclick="addToCart('<%= produk.id_produk %>', '<%= produk.nama_produk %>', '<%= produk.harga_produk %>')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5z"/>
+                                        </svg>
+                                    </button>                                    
+                                </div>
+                            </div>
+                            <p class="card-text">Harga: <%= produk.harga_produk %></p>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% }); %>
+    </div>
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderModal">
+        Keranjang Pesanan
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">Pesanan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="order-list" class="list-group"></ul>
+                    <div class="form-group">
+                        <label for="nama_pelanggan">Nama Pelanggan:</label>
+                        <input type="text" id="nama_pelanggan" name="nama_pelanggan" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="total_harga">Total Harga:</label>
+                        <input type="text" id="total_harga" name="total_harga" class="form-control" readonly required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button id="submit-order-btn" type="button" class="btn btn-primary">Buat Pesanan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let cart = []; // Inisialisasi keranjang pesanan
+
+    // Fungsi untuk menambahkan produk ke keranjang pesanan
+    function addToCart(idProduk, namaProduk, hargaProduk) {
+        // Cek apakah produk sudah ada di keranjang pesanan
+        const existingProductIndex = cart.findIndex(product => product.id === idProduk);
+
+        if (existingProductIndex !== -1) {
+            // Jika produk sudah ada, tambahkan jumlahnya
+            cart[existingProductIndex].jumlah++;
+        } else {
+            // Jika produk belum ada, tambahkan produk baru ke keranjang
+            cart.push({ id: idProduk, nama: namaProduk, harga: hargaProduk, jumlah: 1 });
+        }
+
+        // Perbarui form pesanan
+        updateOrderForm();
+    }
+
+// Fungsi untuk memperbarui form pesanan
+function updateOrderForm() {
+    const orderList = document.getElementById('order-list');
+    let totalHarga = 0;
+
+    orderList.innerHTML = '';
+
+    cart.forEach((produk, index) => {
+        const item = document.createElement('li');
+        item.className = 'order-item';
+        item.innerHTML = `
+            <span>${produk.nama} - ${produk.harga} - Jumlah: ${produk.jumlah}</span>
+            <button onclick="editItem(${index})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                </svg>
+            </button>
+            <button onclick="removeItem(${index})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                </svg>
+            </button>
+        `;
+        orderList.appendChild(item);
+        // Ubah harga menjadi angka dengan parseFloat
+        totalHarga += parseFloat(produk.harga) * produk.jumlah;
+    });
+
+    const totalHargaInput = document.getElementById('total_harga');
+    totalHargaInput.value = totalHarga.toFixed(2); // pastikan untuk menetapkan nilai menjadi string yang menampilkan dua angka di belakang koma
+
+    const orderModal = document.getElementById('order-form');
+    orderModal.style.display = 'block';
+}
+
+
+    // Fungsi untuk menghapus item dari pesanan
+    function removeItem(index) {
+        cart.splice(index, 1); // Hapus item dari keranjang pesanan
+        updateOrderForm(); // Perbarui tampilan pesanan
+    }
+
+    // Fungsi untuk mengedit jumlah item dalam pesanan
+    function editItem(index) {
+        const newQuantity = prompt("Masukkan jumlah baru:");
+        if (newQuantity !== null && !isNaN(newQuantity) && newQuantity > 0) {
+            cart[index].jumlah = parseInt(newQuantity);
+            updateOrderForm(); // Perbarui tampilan pesanan
+        } else {
+            alert("Jumlah tidak valid!");
+        }
+    }
+
+    // Fungsi untuk menangani pengiriman pesanan ke server
+    function submitOrder() {
+        // Mendapatkan data yang diperlukan dari form
+        const namaPelanggan = document.getElementById('nama_pelanggan').value;
+        const totalHarga = document.getElementById('total_harga').value;
+
+        // Menyiapkan array untuk menyimpan produk dalam format yang sesuai untuk pengiriman ke server
+        const produkUntukServer = cart.map(produk => {
+            return { id_produk: produk.id, nama_produk: produk.nama, harga_produk: produk.harga, jumlah_produk: produk.jumlah };
+        });
+
+        // Membuat objek pesanan dengan data yang lengkap
+        const order = {
+            nama_pelanggan: namaPelanggan,
+            total_harga: totalHarga,
+            produk: produkUntukServer // Data produk dari keranjang pesanan dalam format yang sesuai untuk server
+        };
+
+        // Mengirim pesanan ke server menggunakan fetch API
+        fetch('/pesanan/store', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Gagal membuat pesanan');
+            }
+            // Mengosongkan keranjang pesanan setelah pesanan berhasil dibuat
+            cart = [];
+            updateOrderForm();
+            alert('Pesanan berhasil dibuat');
+        })
+        .catch(error => {
+            console.error('Kesalahan:', error.message);
+            alert('Terjadi kesalahan saat membuat pesanan');
+        });
+    }
+
+    // Menambahkan event listener pada tombol "Buat Pesanan"
+    document.getElementById('submit-order-btn').addEventListener('click', submitOrder);
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
